@@ -24,7 +24,7 @@ define(['kievII'], function() {
            if (dest === '/curve/set/') {
                var elNumber = message[1];
                var cuValue = message[2];
-               var pointValue = (( 1 - cuValue ) * OSCTest.viewHeight);
+               var pointValue = (( 1 - cuValue ) * this.viewHeight);
                if (!this.ui.isElement('testCurve')) {
                    console.log ('Curve element not initialized yet, this is normal');
                    return;
