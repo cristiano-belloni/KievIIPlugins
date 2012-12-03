@@ -1,7 +1,7 @@
 define(['kievII'], function() {
   var pluginConf = {
       canvas: {
-          width: 200,
+          width: 400,
           height: 50
       },
       osc: true
@@ -29,10 +29,10 @@ define(['kievII'], function() {
        
     };
         
-    this.localClient = this.handler.registerClient ({ clientID : "clickBarPlugin",
+    this.localClient = this.handler.registerClient ({ clientID : "OSCDumpPlugin",
                                                       oscCallback : oscCallback.bind (this)
                                                     });
-    var fontHeight =  Math.floor(this.viewHeight / 4);
+    var fontHeight =  Math.floor(this.viewHeight / 5);
     
     // Label
     var labelArgs = {
