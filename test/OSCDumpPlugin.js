@@ -37,11 +37,11 @@ define(['kievII'], function() {
     // Label
     var labelArgs = {
         ID: "OSCDumpLabel",
-        left : 0,
-        top : 0,
+        left : this.viewWidth / 10,
+        top : (this.viewHeight - fontHeight) / 2,
         height: this.viewHeight,
         width: this.viewWidth,
-        textColor: "black",
+        textColor: "yellow",
         transparency: 0.8,
         objParms: {
             font: fontHeight + "pt Arial",
