@@ -13,6 +13,7 @@ define(['kievII'], function() {
     console.log ("plugin inited, args is", args, "KievII object is ", K2);
     
     this.name = args.name;
+    this.id = args.id;
     
     // The sound part
     this.audioSource = args.audioSource;
@@ -113,9 +114,9 @@ define(['kievII'], function() {
     this.OSChandler = args.OSCHandler;
      
     var oscCallback = function (message) {
-       console.log (this.name + " received message: ", message);
+       console.log (this.id + " received message: ", message);
        var dest = message[0];
-       if (dest === this.name + '/bypass/set/') {
+       if (dest === this.id + '/bypass/set/') {
            var bypass = message[1];
            if (bypass === true) {
                this.vIn.noteOff(0);
@@ -129,7 +130,7 @@ define(['kievII'], function() {
         }
     };
     
-    this.localClient = this.OSChandler.registerClient ({ clientID : this.name,
+    this.localClient = this.OSChandler.registerClient ({ clientID : this.id,
                                                       oscCallback : oscCallback.bind (this)
                                                     });
     
@@ -154,6 +155,8 @@ define(['kievII'], function() {
                     console.log ("Frequency was ", this.vIn.frequency.value, " set to: ", parValue);
                     this.vIn.frequency.value = parValue;
                     console.log ("Frequency is ", this.vIn.frequency.value, " set to: ", parValue);
+                    var msg = new K2.OSC.Message(this.id + '/frequency/set/', parValue);
+                    this.localClient.sendOSC(msg);
                 }
                 this.ui.refresh();
                 
