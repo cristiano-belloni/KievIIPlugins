@@ -56,24 +56,23 @@ define(['kievII', 'https://github.com/corbanbrook/dsp.js/raw/master/dsp.js', 'ht
 
 	var bgImg = new Image();
 	
-	bgImg.onload = function() {
+	bgImg.onload = (function (bgImg) {
+		
 	  console.log ("Loaded");
-	};
+      var bg = new K2.Background({
+          ID: 'background',
+          image: bgImg,
+          top: 0,
+          left: 0
+      });
+
+      this.ui.addElement(bg, {zIndex: 0});
+      this.ui.refresh();
+	}).bind(this, bgImg);
 	
 	bgImg.src = background_data;
 
-    var bg = new K2.Background({
-        ID: 'background',
-        image: bgImg,
-        top: 0,
-        left: 0
-    });
-
-    this.ui.addElement(bg, {zIndex: 0});
-
-    /* END OF BACKGROUND INIT */
-    
-    this.ui.refresh(); 
+     
 
     return this;   
   };
