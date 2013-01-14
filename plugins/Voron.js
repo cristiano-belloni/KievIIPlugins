@@ -1,4 +1,4 @@
-define(['kievII', 'https://github.com/corbanbrook/dsp.js/raw/master/dsp.js', 'https://github.com/janesconference/KievII/raw/master/dsp/pitchshift.js'], function() {
+define(['kievII', 'https://github.com/corbanbrook/dsp.js/raw/master/dsp.js', 'https://github.co/janesconference/KievII/raw/master/dsp/pitchshift.js', 'test/testload.js'], function() {
   var pluginConf = {
       osc: true,
       audioIn: true,
