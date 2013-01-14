@@ -67,8 +67,6 @@ define(['kievII',
 
     this.ui.addElement(bg, {zIndex: 0});
     this.ui.refresh();
-
-    return this;   
   };
   return {
     initPlugin: initPlugin,

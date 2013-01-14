@@ -170,9 +170,7 @@ define(['kievII'], function() {
         slot : 'gaugevalue',
         value : 0.0
     });
-    this.ui.refresh(); 
-
-    return this;   
+    this.ui.refresh();   
   };
   return {
     initPlugin: initPlugin,
