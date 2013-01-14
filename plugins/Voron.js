@@ -71,7 +71,7 @@ define(['kievII', 'https://github.com/corbanbrook/dsp.js/raw/master/dsp.js', 'ht
 	}).bind(this, bgImg);
 	
 	bgImg.src = background_data;
-
+	/* /BACKGROUND INIT */
      
 
     return this;   
