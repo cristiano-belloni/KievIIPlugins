@@ -1,9 +1,15 @@
 define(['kievII',
         'https://github.com/corbanbrook/dsp.js/raw/master/dsp.js',
         'https://github.com/janesconference/KievII/raw/master/dsp/pitchshift.js',
-        'image!'+ require.toUrl('assets/images/Voron_bg2.png')], function(k2, dsp, pitchshift, bgImage) {
+        'image!'+ require.toUrl('assets/images/Voron_bg2.png'),
+        'image!'+ require.toUrl('assets/images/white_big.png')],
+        function(k2, dsp, pitchshift, bgImage, kImage) {
 
   var backgroundImage =  bgImage;
+  var knobImage =  kImage;
+  var nSamples = 2048;
+  var fftFrameSize = 2048;
+  shifterStartValue = 0;
   
   var pluginConf = {
       osc: true,
@@ -25,6 +31,32 @@ define(['kievII',
     this.audioDestination = args.audioDestination;
     this.context = args.audioContext;
     var context = this.context;
+    
+    this.processorNode = this.context.createJavaScriptNode(nSamples);
+    
+    this.shifter = new Pitchshift(fftFrameSize, this.context.sampleRate, 'FFT');
+    
+    this.processorNode.onaudioprocess = function (event) {
+        // Get left/right input and output arrays
+        var outputArray = [];
+        outputArray[0] = event.outputBuffer.getChannelData(0);
+        //outputArray[1] = event.outputBuffer.getChannelData(1);
+        var inputArray = [];
+        inputArray[0] = event.inputBuffer.getChannelData(0);
+        console.log ("input is long: ", inputArray[0].length);
+        //console.log ("Channel 1 is long: ", outputArray[1].length);
+        var data = inputArray[0];
+        this.shifter.process (this.shiftValue, data.length, 4, data);
+        
+        var out_data = outputArray[0];
+        for (i = 0; i < out_data.length; ++i) {
+            out_data[i] = this.shifter.outdata[i];
+        }
+        
+    }.bind(this);
+    
+    this.audioSource.connect (this.processorNode);
+    this.processorNode.connect (this.audioDestination);
     
     // The OSC part
     this.OSChandler = args.OSCHandler;
@@ -66,6 +98,29 @@ define(['kievII',
     });
 
     this.ui.addElement(bg, {zIndex: 0});
+    
+    /* KNOB INIT */
+   var knobArgs = {
+        ID: "pitch_knob",
+        left: Math.floor ((this.viewWidth - knobImage.width) / 2) ,
+        top: Math.floor ((this.viewHeight - knobImage.height) / 2),
+        image : knobImage,
+        sensitivity : 5000,
+        initAngValue: -90,
+        startAngValue: 0,
+        stopAngValue: 360,
+        /* knobMethod: 'updown', */
+        onValueSet: function (slot, value) {
+            var shift_value = value * (1.5) + 0.5;
+            this.shiftValue = shift_value;
+            console.log ('Shift value set to ', value, this.shiftValue);
+            this.ui.refresh();
+        }.bind(this),
+        isListening: true
+    };
+    
+    this.ui.addElement(new K2.RotKnob(knobArgs));
+    this.ui.setValue({elementID: "pitch_knob", value: 0});
     this.ui.refresh();
   };
   return {
