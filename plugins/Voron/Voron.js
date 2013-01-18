@@ -16,8 +16,8 @@ define(['kievII',
       audioIn: true,
       audioOut: true,
       canvas: {
-          width: 766,
-          height: 527
+          width: 268,
+          height: 340
       },
   }
   var initPlugin = function(args) {
@@ -32,7 +32,7 @@ define(['kievII',
     this.context = args.audioContext;
     var context = this.context;
     
-    this.processorNode = this.context.createJavaScriptNode(nSamples);
+    this.processorNode = this.context.createJavaScriptNode(nSamples, 1, 1);
     
     this.shifter = new Pitchshift(fftFrameSize, this.context.sampleRate, 'FFT');
     
@@ -40,11 +40,9 @@ define(['kievII',
         // Get left/right input and output arrays
         var outputArray = [];
         outputArray[0] = event.outputBuffer.getChannelData(0);
-        //outputArray[1] = event.outputBuffer.getChannelData(1);
         var inputArray = [];
         inputArray[0] = event.inputBuffer.getChannelData(0);
         console.log ("input is long: ", inputArray[0].length);
-        //console.log ("Channel 1 is long: ", outputArray[1].length);
         var data = inputArray[0];
         this.shifter.process (this.shiftValue, data.length, 4, data);
         
@@ -102,8 +100,8 @@ define(['kievII',
     /* KNOB INIT */
    var knobArgs = {
         ID: "pitch_knob",
-        left: Math.floor ((this.viewWidth - knobImage.width) / 2) ,
-        top: Math.floor ((this.viewHeight - knobImage.height) / 2),
+        left: 87 ,
+        top: 176,
         image : knobImage,
         sensitivity : 5000,
         initAngValue: -90,
