@@ -13,8 +13,8 @@ define(['kievII',
   
   var pluginConf = {
       osc: true,
-      audioIn: true,
-      audioOut: true,
+      audioIn: 1,
+      audioOut: 1,
       canvas: {
           width: 268,
           height: 340
@@ -27,8 +27,8 @@ define(['kievII',
     this.id = args.id;
     
     // The sound part
-    this.audioSource = args.audioSource;
-    this.audioDestination = args.audioDestination;
+    this.audioSource = args.audioSources[0];
+    this.audioDestination = args.audioDestinations[0];
     this.context = args.audioContext;
     var context = this.context;
     
@@ -42,7 +42,7 @@ define(['kievII',
         outputArray[0] = event.outputBuffer.getChannelData(0);
         var inputArray = [];
         inputArray[0] = event.inputBuffer.getChannelData(0);
-        console.log ("input is long: ", inputArray[0].length);
+        // console.log ("input is long: ", inputArray[0].length);
         var data = inputArray[0];
         this.shifter.process (this.shiftValue, data.length, 4, data);
         
@@ -104,9 +104,9 @@ define(['kievII',
         top: 176,
         image : knobImage,
         sensitivity : 5000,
-        initAngValue: -90,
-        startAngValue: 0,
-        stopAngValue: 360,
+        initAngValue: 270,
+        startAngValue: 218,
+        stopAngValue: 501,
         /* knobMethod: 'updown', */
         onValueSet: function (slot, value) {
             var shift_value = value * (1.5) + 0.5;

@@ -1,8 +1,8 @@
 define(['kievII'], function() {
   var pluginConf = {
       osc: true,
-      audioIn: true,
-      audioOut: true,
+      audioIn: 1,
+      audioOut: 1,
       canvas: {
           width: 450,
           height: 300
@@ -16,8 +16,8 @@ define(['kievII'], function() {
     this.id = args.id;
     
     // The sound part
-    this.audioSource = args.audioSource;
-    this.audioDestination = args.audioDestination;
+    this.audioSource = args.audioSources[0];
+    this.audioDestination = args.audioDestinations[0];
     this.context = args.audioContext;
     var context = this.context;
     
