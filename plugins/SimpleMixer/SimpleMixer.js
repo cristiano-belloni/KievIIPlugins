@@ -18,13 +18,40 @@ define(['kievII'], function() {
     this.context = args.audioContext;
     var context = this.context;
     this.gainMixerNodes = [];
+    this.lowFilters = [];
+    this.midFilters = [];
+    this.highFilters = [];
     
-    for (var i = 0; i < audioSources.length; i+=1) {
+    
+    
+    for (var i = 0; i < this.audioSources.length; i+=1) {
         this.gainMixerNodes[i] = context.createGainNode();
-        this.gainMixerNodes[i].connect(this.audioDestination);
+        this.audioSources[i].connect(this.gainMixerNodes[i]);
+        
+        this.lowFilters[i] = context.createBiquadFilter(),
+        this.midFilters[i] = context.createBiquadFilter(),
+        this.highFilters[i] = context.createBiquadFilter();
+    
+         // Set the filter types (you could set all to 5, for a different result, feel free to experiment)
+         // Set the filter gains to  0 (gain = boost in dB)
+         this.lowFilters[i].type = 3;
+         this.lowFilters[i].gain.value = 0;
+         this.lowFilters[i].frequency.value = 80;
+         this.midFilters[i].type = 5;
+         this.midFilters[i].gain.value = 0;
+         this.midFilters[i].frequency.value = 1000;
+         this.highFilters[i].type = 4;
+         this.highFilters[i].frequency.value = 8000;
+         this.highFilters[i].gain.value = 0;
+        
+         // Create and connect the filter chain
+         this.gainMixerNodes[i].connect(this.lowFilters[i]);
+         this.lowFilters[i].connect(this.midFilters[i]);
+         this.midFilters[i].connect(this.highFilters[i]);
+         this.highFilters[i].connect(this.audioDestination);
     }
     
-    // the canvas part
+    // The canvas part
     this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas});
     
     this.viewWidth = args.canvas.width;
@@ -41,10 +68,11 @@ define(['kievII'], function() {
         top : this.viewHeight / 5,
         height: this.viewHeight / 5 * 3,
         width: barWidth,
-        onValueSet: function (slot, value) {
-            var index = this.id.split(idPrefix)[1];
+        onValueSet: function (slot, value, element) {
+            var index = element.split(idPrefix)[1];
             index = parseInt(index, 10);
-            this.gainMixerNodes[index].gain = value;
+            var audioNode = this.gainMixerNodes[index];
+            audioNode.gain.value = value;
             this.ui.refresh();
         }.bind(this),
         isListening: true
