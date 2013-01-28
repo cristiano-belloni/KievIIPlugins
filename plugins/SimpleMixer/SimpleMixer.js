@@ -1,10 +1,15 @@
-define(['kievII'], function() {
+define(['kievII',
+        'image!'+ require.toUrl('assets/images/vsliderhandle_50.png'),
+        'image!'+ require.toUrl('assets/images/vsliderslot_200.png')
+        ], function(k2, faderImg, slotImg) {
+        var faderImage =  faderImg;
+        var slotImage =  slotImg;
   var pluginConf = {
       osc: true,
       audioIn: 8,
       audioOut: 1,
       canvas: {
-          width: 450,
+          width: 650,
           height: 300
       },
   }
@@ -21,8 +26,6 @@ define(['kievII'], function() {
     this.lowFilters = [];
     this.midFilters = [];
     this.highFilters = [];
-    
-    
     
     for (var i = 0; i < this.audioSources.length; i+=1) {
         this.gainMixerNodes[i] = context.createGainNode();
@@ -57,32 +60,32 @@ define(['kievII'], function() {
     this.viewWidth = args.canvas.width;
     this.viewHeight = args.canvas.height;
     
-    var barWidth =  Math.floor(this.viewWidth / 80 * 8);
-    var spaceWidth = Math.floor(this.viewWidth / 90 * 2);
+    var idPrefix = "gainFader";
     
-    var idPrefix = "gainClickBar";
+    var spaceWidth = 15;
     
-    var clickBarArgs = {
-        ID: "",
-        left : 0,
-        top : this.viewHeight / 5,
-        height: this.viewHeight / 5 * 3,
-        width: barWidth,
-        onValueSet: function (slot, value, element) {
-            var index = element.split(idPrefix)[1];
-            index = parseInt(index, 10);
-            var audioNode = this.gainMixerNodes[index];
-            audioNode.gain.value = value;
-            this.ui.refresh();
-        }.bind(this),
-        isListening: true
-    };
+    vSliderArgs = {
+            ID: "",
+            left: spaceWidth,
+            top : 20,
+            sliderImg: slotImage,
+            knobImg: faderImage,
+            onValueSet: function (slot, value, element) {
+                var index = element.split(idPrefix)[1];
+                index = parseInt(index, 10);
+                var audioNode = this.gainMixerNodes[index];
+                audioNode.gain.value = 1 - value;
+                this.ui.refresh();
+            }.bind(this),
+            type:"vertical",
+            isListening: true
+        };
     
     for (var i = 0; i < 8; i += 1) {
-        clickBarArgs.ID = idPrefix + i;
-        clickBarArgs.left = (i * barWidth + (i+1) * spaceWidth);
-        this.ui.addElement(new K2.ClickBar(clickBarArgs));
-        this.ui.setValue ({elementID: clickBarArgs.ID, slot: 'barvalue', value: 0.5});
+        vSliderArgs.ID = idPrefix + i;
+        vSliderArgs.left = (i * faderImage.width + (i+1) * spaceWidth);
+        this.ui.addElement(new K2.Slider(vSliderArgs));
+        this.ui.setValue ({elementID: vSliderArgs.ID, value: 0.5});
     }        
       
   };
