@@ -1,11 +1,16 @@
-define(['kievII'], function() {
+define(['kievII',
+		'image!'+ require.toUrl('assets/images/auxknob_80_50.png'),
+		'image!'+ require.toUrl('assets/images/deck.png')], function(k2, knobImg, deckImg) {
+  var freqKnobImage = knobImg;
+  var distKnobImage = knobImg;
+  var deckImage = deckImg;
   var pluginConf = {
       osc: true,
       audioIn: 1,
       audioOut: 1,
       canvas: {
-          width: 450,
-          height: 300
+          width: 288,
+          height: 193
       },
   }
   var initPlugin = function(args) {
@@ -70,7 +75,7 @@ define(['kievII'], function() {
     
     // Initialize nodes      
     this.vIn = context.createOscillator();
-    this.vIn.frequency.value = 4;
+    this.vIn.frequency.value = 0;
     this.vIn.noteOn(0);
     this.vInGain = context.createGainNode();
     this.vInGain.gain.value = 0.5;
@@ -137,17 +142,31 @@ define(['kievII'], function() {
      // The graphical part
     this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas});
     
+    /* BACKGROUND INIT */
+    
+    var bgArgs = new K2.Background({
+        ID: 'background',
+        image: deckImage,
+        top: 0,
+        left: 0
+    });
+
+    this.ui.addElement(bgArgs, {zIndex: 0});
+    
     this.viewWidth = args.canvas.width;
     this.viewHeight = args.canvas.height;
     
-    var freqGaugeArgs = {
-            ID : this.name + "freqGauge",
-            left : Math.floor(this.viewWidth * 0.5 - this.viewWidth * 0.2),
-            top : Math.floor(this.viewHeight * 0.5 - this.viewHeight * 0.2),
-            height : 120,
-            width : 120,
-            onValueSet : function(slot, value) {
-                
+    var freqKnobArgs = {
+        	imagesArray : [freqKnobImage],
+        	sensitivity : 5000,
+        	tileWidth: 80,
+        	tileHeight: 80,
+        	imageNum: 50,
+        	bottomAngularOffset: 33,
+            ID : this.name + "freqKnob",
+            left : 30,
+            top : 60,
+            onValueSet : function(slot, value) {              
                 /* valueMin: 0 valueMax: 2000 */
                 var parValue = value * 2000;
                 parValue = parValue.toFixed(2);
@@ -163,11 +182,43 @@ define(['kievII'], function() {
             }.bind(this),
             isListening : true
         };
+		
+	    var distKnobArgs = {
+	        	imagesArray : [distKnobImage],
+	        	sensitivity : 5000,
+	        	tileWidth: 80,
+	        	tileHeight: 80,
+	        	imageNum: 50,
+	        	bottomAngularOffset: 33,
+	            ID : this.name + "distKnob",
+	            left : 173,
+	            top : 60,
+	            onValueSet : function(slot, value) {              
+	             
+					/* 
+					setDistortion
+					0.2, 50
+					vInDiode1, vInDiode2, vcDiode3, vcDiode4*/
+	                
+	                this.ui.refresh();
+                
+	            }.bind(this),
+	            isListening : true
+	        };
+		
+		
 
-    this.ui.addElement(new K2.Gauge(freqGaugeArgs));
+    this.ui.addElement(new K2.Knob(freqKnobArgs));
     this.ui.setValue({
-        elementID : this.name + 'freqGauge',
-        slot : 'gaugevalue',
+        elementID : this.name + 'freqKnob',
+        slot : 'knobvalue',
+        value : 0.0
+    });
+
+    this.ui.addElement(new K2.Knob(distKnobArgs));
+    this.ui.setValue({
+        elementID : this.name + 'distKnob',
+        slot : 'knobvalue',
         value : 0.0
     });
     this.ui.refresh();   
