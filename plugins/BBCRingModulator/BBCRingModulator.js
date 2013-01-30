@@ -195,11 +195,12 @@ define(['kievII',
 	            top : 60,
 	            onValueSet : function(slot, value) {              
 	             
-					/* 
-					setDistortion
-					0.2, 50
-					vInDiode1, vInDiode2, vcDiode3, vcDiode4*/
-	                
+	                var distValue = K2.MathUtils.linearRange(0, 1, 0.2, 50, value);
+	                var distNodesArray = [this.vInDiode1, this.vInDiode2, this.vcDiode3, this.vcDiode4];
+	                for (var i = 0; i < distNodesArray.length; i+=1) {
+	                    distNodesArray[i].setDistortion (distValue);
+	                }
+						                
 	                this.ui.refresh();
                 
 	            }.bind(this),
