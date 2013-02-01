@@ -110,6 +110,12 @@ define(['kievII',
         /* knobMethod: 'updown', */
         onValueSet: function (slot, value) {
             var shift_value = value * (1.5) + 0.5;
+            /* shift argument is like a play rate */
+            /* We want 0 -> 0.5, 0.5 -> 1, 1 -> 2 */
+            /* Let's calculate the semitones */
+            var semitoneShift =  K2.MathUtils.linearRange (0, 1, -12, 12, value);
+            /* Let's calculate the "play rate" */
+            var shift_value = Math.pow(1.0595, semitoneShift);
             this.shiftValue = shift_value;
             console.log ('Shift value set to ', value, this.shiftValue);
             this.ui.refresh();
@@ -118,7 +124,7 @@ define(['kievII',
     };
     
     this.ui.addElement(new K2.RotKnob(knobArgs));
-    this.ui.setValue({elementID: "pitch_knob", value: 0});
+    this.ui.setValue({elementID: "pitch_knob", value: 0.5});
     this.ui.refresh();
   };
   return {
