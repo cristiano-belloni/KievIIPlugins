@@ -96,7 +96,10 @@ define(['kievII',
         this.audioBuffer = decoded;
         
         this.decoded_arrayL = decoded.getChannelData (0);
-        this.decoded_arrayR = decoded.getChannelData (1);
+        
+        // Todo one has got to check if the signal is mono or stero here
+        //this.decoded_arrayR = decoded.getChannelData (1);
+        
         console.log ("I got the data!");
         
         var waveID = 'wavebox_L';
@@ -106,10 +109,10 @@ define(['kievII',
             // Wavebox parameters
             var waveboxArgs = {
                 ID: waveID,
-                top: 10,
+                top: 35,
                 left: 10,
                 width: this.canvas.width - 10 * 2,
-                height: this.canvas.height - 10 - 120,
+                height: 148,
                 isListening: true,
                 waveColor: '#CC0000',
                 transparency: 0.8
