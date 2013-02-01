@@ -3,7 +3,7 @@ define(['kievII',
         'image!'+ require.toUrl('assets/images/keywhite.png'),
         'image!'+ require.toUrl('assets/images/keyblack_down.png'),
         'image!'+ require.toUrl('assets/images/keywhite_down.png'),
-		'image!'+ require.toUrl('assets/images/KSP0001Deck.png'),
+		'image!'+ require.toUrl('assets/images/deck.png'),
 		], function(
             k2,
             keyBlackImg,
@@ -41,7 +41,7 @@ define(['kievII',
     
     this.audioBuffer = null; 
     
-    this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas});
+    this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas}, {'breakOnFirstEvent': true});
     
     this.viewWidth = args.canvas.width;
     this.viewHeight = args.canvas.height;
@@ -121,7 +121,7 @@ define(['kievII',
             }.bind(this);
     
             var waveBox_L = new K2.Wavebox(waveboxArgs);
-            this.ui.addElement(waveBox_L);
+            this.ui.addElement(waveBox_L, {zIndex: 2});
         }
     
         this.ui.setValue ({elementID: waveID, slot: "waveboxsignal", value: this.decoded_arrayL});     
@@ -192,7 +192,7 @@ define(['kievII',
                this.bSrc = this.audioContext.createBufferSource();
                this.bSrc.connect (this.audioDestination);
                this.bSrc.buffer = this.audioBuffer;
-               this.bSrc.playbackRate.value = Math.pow(1.0595, stMultiplier);
+               this.bSrc.playbackRate.value = Math.pow(1.0595, stPower);
                this.bSrc.loop = false;
                this.bSrc.start(0);
             }
@@ -220,7 +220,7 @@ define(['kievII',
 		whiteKeyArgs.top = 204;
 		whiteKeyArgs.left = 4 + i * 30;    
 		whiteKeyArgs.ID = "wk_" + i;
-        this.ui.addElement(new K2.Button(whiteKeyArgs));
+        this.ui.addElement(new K2.Button(whiteKeyArgs), {zIndex: 1});
     }
 	
 	// Black keys
@@ -239,7 +239,7 @@ define(['kievII',
 			blackKeyArgs.top = 203;
 			blackKeyArgs.left = bkArray[i];    
 			blackKeyArgs.ID = "bk_" + i;
-	        this.ui.addElement(new K2.Button(blackKeyArgs));
+	        this.ui.addElement(new K2.Button(blackKeyArgs), {zIndex: 10});
 	    }
 	    this.ui.refresh();
     
