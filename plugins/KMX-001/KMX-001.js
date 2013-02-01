@@ -1,6 +1,6 @@
 define(['kievII',
         'image!'+ require.toUrl('assets/images/vsliderhandle_50.png'),
-        'image!'+ require.toUrl('assets/images/vsliderslot_200.png'),
+        'image!'+ require.toUrl('assets/images/vsliderslot_empty.png'),
         'image!'+ require.toUrl('assets/images/lmh_series.png'),
         'image!'+ require.toUrl('assets/images/trim_series.png'),
         'image!'+ require.toUrl('assets/images/KMX-001_deck.png')
@@ -92,7 +92,7 @@ define(['kievII',
     vSliderArgs = {
             ID: "",
             left: spaceWidth,
-            top : 440,
+            top : 448,
             sliderImg: slotImage,
             knobImg: faderImage,
             onValueSet: function (slot, value, element) {
