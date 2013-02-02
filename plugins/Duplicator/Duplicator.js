@@ -6,12 +6,9 @@ define(['kievII'/*,
   
   var pluginConf = {
       osc: true,
-      audioOut: 1,
-      audioIn: 2,
-      canvas: {
-          width: 220,
-          height: 220
-      },
+      audioOut: 2,
+      audioIn: 1,
+      canvas: false,
   };
   
     var initPlugin = function(args) {
@@ -20,9 +17,9 @@ define(['kievII'/*,
         this.name = args.name;
         this.id = args.id;
         this.audioSource = args.audioSources[0];
-        this.audioDestinations = args.audioDestinations[0];
+        this.audioDestinations = args.audioDestinations;
         this.context = args.audioContext;
-        this.audioSource.connect(this.audioDestination);
+		this.gainDuplicatorNodes = [];
         
         // The graphical part
         this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas});
@@ -32,8 +29,8 @@ define(['kievII'/*,
         this.viewHeight = args.canvas.height;
         
 	    for (var i = 0; i < this.audioDestinations.length; i+=1) {
-	        this.gainDuplicatorNodes[i] = context.createGainNode();
-			this.AudioSource.connect(this.gainDuplicatorNodes[i]);
+	        this.gainDuplicatorNodes[i] = this.context.createGainNode();
+			this.audioSource.connect(this.gainDuplicatorNodes[i]);
 			this.gainDuplicatorNodes[i].connect(this.audioDestinations[i]);
 		}
         
