@@ -20,14 +20,7 @@ define(['kievII'/*,
         this.audioDestinations = args.audioDestinations;
         this.context = args.audioContext;
 		this.gainDuplicatorNodes = [];
-        
-        // The graphical part
-        this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas});
-		// Todo
-    
-        this.viewWidth = args.canvas.width;
-        this.viewHeight = args.canvas.height;
-        
+
 	    for (var i = 0; i < this.audioDestinations.length; i+=1) {
 	        this.gainDuplicatorNodes[i] = this.context.createGainNode();
 			this.audioSource.connect(this.gainDuplicatorNodes[i]);
