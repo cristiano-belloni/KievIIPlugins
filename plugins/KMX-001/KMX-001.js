@@ -1,5 +1,5 @@
 define(['kievII',
-        'image!assets/images/vsliderhandle_50.png!rel'),
+        'image!'+ require.toUrl('assets/images/vsliderhandle_50.png!rel'),
         'image!'+ require.toUrl('assets/images/vsliderslot_empty.png!rel'),
         'image!'+ require.toUrl('assets/images/lmh_series.png!rel'),
         'image!'+ require.toUrl('assets/images/trim_series.png!rel'),
