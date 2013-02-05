@@ -1,9 +1,9 @@
 define(['kievII',
-        'image!assets/images/vsliderhandle_50.png!rel',
-        'image!assets/images/vsliderslot_empty.png!rel',
-        'image!assets/images/lmh_series.png!rel',
-        'image!assets/images/trim_series.png!rel',
-        'image!assets/images/KMX-001_deck.png!rel'
+        'image!assets/images/vsliderhandle_50.png!rel'),
+        'image!'+ require.toUrl('assets/images/vsliderslot_empty.png!rel'),
+        'image!'+ require.toUrl('assets/images/lmh_series.png!rel'),
+        'image!'+ require.toUrl('assets/images/trim_series.png!rel'),
+        'image!'+ require.toUrl('assets/images/KMX-001_deck.png!rel')
         ], function(k2, faderImg, slotImg, blackKnobImg, redKnobImg, deckImg) {
         var faderImage =  faderImg;
         var slotImage =  slotImg;

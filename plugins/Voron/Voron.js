@@ -1,8 +1,8 @@
 define(['kievII',
         'https://github.com/corbanbrook/dsp.js/raw/master/dsp.js',
         'https://github.com/janesconference/KievII/raw/master/dsp/pitchshift.js',
-        'image!assets/images/Voron_bg2.png!rel',
-        'image!assets/images/white_big.png!rel'],
+        'image!'+ require.toUrl('assets/images/Voron_bg2.png!rel'),
+        'image!'+ require.toUrl('assets/images/white_big.png!rel')],
         function(k2, dsp, pitchshift, bgImage, kImage) {
 
   var backgroundImage =  bgImage;

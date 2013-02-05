@@ -1,6 +1,6 @@
 define(['kievII',
-		'image!assets/images/auxknob_80_50.png!rel',
-		'image!assets/images/deck.png!rel'], function(k2, knobImg, deckImg) {
+		'image!'+ require.toUrl('assets/images/auxknob_80_50.png!rel'),
+		'image!'+ require.toUrl('assets/images/deck.png!rel')], function(k2, knobImg, deckImg) {
   var freqKnobImage = knobImg;
   var distKnobImage = knobImg;
   var deckImage = deckImg;
