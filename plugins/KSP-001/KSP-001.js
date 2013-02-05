@@ -1,6 +1,3 @@
-var test = require.toUrl('assets/images/keyblack.png');
-console.log ("TEST", test);
-console.log ();
 define(['kievII',
         'image!'+ require.toUrl('assets/images/keyblack.png!rel'),
         'image!'+ require.toUrl('assets/images/keywhite.png!rel'),
