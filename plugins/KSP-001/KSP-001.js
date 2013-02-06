@@ -1,32 +1,33 @@
-define(['kievII',
-        'image!'+ require.toUrl('assets/images/keyblack.png!rel'),
-        'image!'+ require.toUrl('assets/images/keywhite.png!rel'),
-        'image!'+ require.toUrl('assets/images/keyblack_down.png!rel'),
-        'image!'+ require.toUrl('assets/images/keywhite_down.png!rel'),
-		'image!'+ require.toUrl('assets/images/deck.png!rel'),
-		], function(
-            k2,
-            keyBlackImg,
-            keyWhiteImg,
-            keyBlackDownImg,
-            keyWhiteDownImg,
-            deckImg
-        ) {
+define(['kievII', 'require'], function(
+            k2, require) {
+      require (['image!'+ require.toUrl('./assets/images/keyblack.png'),
+                'image!'+ require.toUrl('assets/images/keywhite.png!rel'),
+                'image!'+ require.toUrl('assets/images/keyblack_down.png!rel'),
+                'image!'+ require.toUrl('assets/images/keywhite_down.png!rel'),
+                'image!'+ require.toUrl('assets/images/deck.png!rel')],
+                function (
+                    keyBlackImg,
+                    keyWhiteImg,
+                    keyBlackDownImg,
+                    keyWhiteDownImg,
+                    deckImg) {
             
-      var keyBlackImage = keyBlackImg;
-      var keyWhiteImage = keyWhiteImg;
-      var keyBlackDownImage = keyBlackDownImg;
-      var keyWhiteDownImage = keyWhiteDownImg;
-      var deckImage = deckImg;
-  
-  var pluginConf = {
-      osc: true,
-      audioIn: 0,
-      audioOut: 1,
-      canvas: {
-          width: 428,
-          height: 348
-      },
+                    var keyBlackImage = keyBlackImg;
+                    var keyWhiteImage = keyWhiteImg;
+                    var keyBlackDownImage = keyBlackDownImg;
+                    var keyWhiteDownImage = keyWhiteDownImg;
+                    var deckImage = deckImg;
+                  
+                    var pluginConf = {
+                        osc: true,
+                        audioIn: 0,
+                        audioOut: 1,
+                        canvas: {
+                            width: 428,
+                            height: 348
+                        }
+                    }
+                }
   }
   var initPlugin = function(args) {
     console.log ("plugin inited, args is", args, "KievII object is ", K2);
