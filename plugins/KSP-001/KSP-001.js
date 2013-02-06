@@ -30,8 +30,8 @@ define(['kievII', 'require'], function(
                             height: 348
                         }
                     }
-                }
-  var initPlugin = function(args) {
+                
+    var initPlugin = function(args) {
     console.log ("plugin inited, args is", args, "KievII object is ", K2);
     
     this.name = args.name;
@@ -255,4 +255,5 @@ define(['kievII', 'require'], function(
     initPlugin: initPlugin,
     pluginConf: pluginConf
   };
+  }
 });
