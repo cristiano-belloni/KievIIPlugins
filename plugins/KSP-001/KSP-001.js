@@ -252,13 +252,13 @@ define(['kievII', 'require'], function(k2, require) {
         
         var x = canvas.width / 2;
         var y = canvas.height / 2;
+        var fontHeight = Math.floor (canvas.height / 20);
         
-        context.font = '18pt Arial';
+        context.font = 'Italic ' + fontHeight + 'px Monospace';
         context.textAlign = 'center';
-        context.fillStyle = 'white';
-        context.fillText("Loading instance of: " + args.name, x, y);
-        
-        
+        context.fillStyle = "rgba(255, 255, 255, 0.8)";
+        context.fillText("Loading " + args.name, x, y);
+               
         require ([  'image!'+ require.toUrl('./assets/images/keyblack.png'),
                     'image!'+ require.toUrl('./assets/images/keywhite.png'),
                     'image!'+ require.toUrl('./assets/images/keyblack_down.png'),
@@ -270,7 +270,16 @@ define(['kievII', 'require'], function(k2, require) {
                         
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
-                    }.bind(this));
+                    }.bind(this),
+                    function (err) {
+                        console.error ("Error loading resources");
+                        // Reset canvas
+                        context.clearRect(0, 0, canvas.width, canvas.height);
+                        context.fillStyle = "rgba(120, 0, 0, 0.8)";
+                        context.fillRect(0, 0, canvas.width, canvas.height);
+                        context.fillStyle = "rgba(255, 255, 255, 0.8)";
+                        context.fillText("Error loading resources", x, y);
+                    });
          };
  
     return {
