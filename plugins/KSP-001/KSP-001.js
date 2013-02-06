@@ -1,10 +1,13 @@
 define(['kievII', 'require'], function(
             k2, require) {
+                
+      console.log ("***SP: ", require.toUrl('.'));
+                      
       require (['image!'+ require.toUrl('./assets/images/keyblack.png'),
-                'image!'+ require.toUrl('assets/images/keywhite.png!rel'),
-                'image!'+ require.toUrl('assets/images/keyblack_down.png!rel'),
-                'image!'+ require.toUrl('assets/images/keywhite_down.png!rel'),
-                'image!'+ require.toUrl('assets/images/deck.png!rel')],
+                'image!'+ require.toUrl('./assets/images/keywhite.png'),
+                'image!'+ require.toUrl('./assets/images/keyblack_down.png'),
+                'image!'+ require.toUrl('./assets/images/keywhite_down.png'),
+                'image!'+ require.toUrl('./assets/images/deck.png')],
                 function (
                     keyBlackImg,
                     keyWhiteImg,
@@ -28,7 +31,6 @@ define(['kievII', 'require'], function(
                         }
                     }
                 }
-  }
   var initPlugin = function(args) {
     console.log ("plugin inited, args is", args, "KievII object is ", K2);
     

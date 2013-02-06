@@ -5,6 +5,7 @@ define(['kievII',
         'image!'+ require.toUrl('assets/images/trim_series.png!rel'),
         'image!'+ require.toUrl('assets/images/KMX-001_deck.png!rel')
         ], function(k2, faderImg, slotImg, blackKnobImg, redKnobImg, deckImg) {
+        console.log ("***MX: ", require.toUrl('.'));
         var faderImage =  faderImg;
         var slotImage =  slotImg;
         var blackKnobImage =  blackKnobImg;
