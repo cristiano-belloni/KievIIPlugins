@@ -244,20 +244,6 @@ define(['kievII', 'require'], function(k2, require) {
        the plugin is requested [e.g: displayed on screen] */        
     var initPlugin = function(initArgs) {
         var args = initArgs;
-        
-        var canvas = args.canvas;
-        var context = canvas.getContext('2d');
-        // Reset canvas
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        
-        var x = canvas.width / 2;
-        var y = canvas.height / 2;
-        var fontHeight = Math.floor (canvas.height / 20);
-        
-        context.font = 'Italic ' + fontHeight + 'px Monospace';
-        context.textAlign = 'center';
-        context.fillStyle = "rgba(255, 255, 255, 0.8)";
-        context.fillText("Loading " + args.name, x, y);
                
         require ([  'image!'+ require.toUrl('./assets/images/keyblack.png'),
                     'image!'+ require.toUrl('./assets/images/keywhite.png'),
@@ -265,20 +251,12 @@ define(['kievII', 'require'], function(k2, require) {
                     'image!'+ require.toUrl('./assets/images/keywhite_down.png'),
                     'image!'+ require.toUrl('./assets/images/deck.png')],
                     function () {
-                        // Reset canvas
-                        context.clearRect(0, 0, canvas.width, canvas.height);
-                        
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
                     }.bind(this),
                     function (err) {
                         console.error ("Error loading resources");
-                        // Reset canvas
-                        context.clearRect(0, 0, canvas.width, canvas.height);
-                        context.fillStyle = "rgba(120, 0, 0, 0.8)";
-                        context.fillRect(0, 0, canvas.width, canvas.height);
-                        context.fillStyle = "rgba(255, 255, 255, 0.8)";
-                        context.fillText("Error loading resources", x, y);
+                        args.K2HInterface.pluginError (args.id, "Error loading resources");
                     });
          };
  

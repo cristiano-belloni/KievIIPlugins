@@ -203,8 +203,13 @@ define(['kievII', 'require'], function(k2, require) {
                     function () {
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
-                    }.bind(this)
-                );
+                    }.bind(this),
+                    function (err) {
+                        console.error ("Error loading resources");
+                        var failedId = err.requireModules && err.requireModules[0]
+                        requirejs.undef(failedId);
+                        args.K2HInterface.pluginError (args.id, "Error loading resources");
+                    });
     };
       
     return {

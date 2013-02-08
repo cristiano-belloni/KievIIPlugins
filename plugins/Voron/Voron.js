@@ -132,20 +132,6 @@ define(['kievII', 'require'], function(k2, require) {
     var initPlugin = function(initArgs) {
         var args = initArgs;
         
-        var canvas = args.canvas;
-        var context = canvas.getContext('2d');
-        // Reset canvas
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        
-        var x = canvas.width / 2;
-        var y = canvas.height / 2;
-        var fontHeight = Math.floor (canvas.height / 20);
-        
-        context.font = 'Italic ' + fontHeight + 'px Monospace';
-        context.textAlign = 'center';
-        context.fillStyle = "rgba(255, 255, 255, 0.8)";
-        context.fillText("Loading " + args.name, x, y);
-        
         require ([  'https://github.com/corbanbrook/dsp.js/raw/master/dsp.js',
                     'https://github.com/janesconference/KievII/raw/master/dsp/pitchshift.js',
                     'image!'+ require.toUrl('./assets/images/Voron_bg2.png'),
@@ -156,12 +142,7 @@ define(['kievII', 'require'], function(k2, require) {
                     }.bind(this),
                     function (err) {
                         console.error ("Error loading resources");
-                        // Reset canvas
-                        context.clearRect(0, 0, canvas.width, canvas.height);
-                        context.fillStyle = "rgba(120, 0, 0, 0.8)";
-                        context.fillRect(0, 0, canvas.width, canvas.height);
-                        context.fillStyle = "rgba(255, 255, 255, 0.8)";
-                        context.fillText("Error loading resources", x, y);
+                        args.K2HInterface.pluginError (args.id, "Error loading resources");
                     });
     };
     
