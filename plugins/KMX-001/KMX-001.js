@@ -48,12 +48,12 @@ define(['require'], function(require) {
              // Set the filter gains to  0 (gain = boost in dB)
              this.lowFilters[i].type = 3;
              this.lowFilters[i].gain.value = 0;
-             this.lowFilters[i].frequency.value = 80;
+             this.lowFilters[i].frequency.value = 220;
              this.midFilters[i].type = 5;
              this.midFilters[i].gain.value = 0;
              this.midFilters[i].frequency.value = 1000;
              this.highFilters[i].type = 4;
-             this.highFilters[i].frequency.value = 8000;
+             this.highFilters[i].frequency.value = 6000;
              this.highFilters[i].gain.value = 0;
              
              this.trimNodes[i] = context.createGainNode();
@@ -187,6 +187,27 @@ define(['require'], function(require) {
                 this.ui.setValue ({elementID: knobArgs.ID, value: 0.5});
             }
         }
+		
+		/* Master Volume knob */
+        var masterKnobArgs = {
+             ID: "masterVolKnob",
+             left: 478,
+             top: 18,
+			 imagesArray: [redKnobImage],
+             sensitivity : 5000,
+             tileWidth: 50,
+             tileHeight: 50,
+             imageNum: 50,
+             bottomAngularOffset: 33,
+             onValueSet: function (slot, value, element) {
+                 this.masterGainNode.gain.value = value;
+                 this.ui.refresh();
+             }.bind(this),
+             isListening: true
+         };
+		 
+		 this.ui.addElement(new K2.Knob(masterKnobArgs));
+		 this.ui.setValue ({elementID: masterKnobArgs.ID, value: 1});
         
         this.ui.refresh(); 
   }
