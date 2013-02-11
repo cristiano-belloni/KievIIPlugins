@@ -1,8 +1,6 @@
-define(['kievII'/*,
+define(['require'/*,
         'image!'+ require.toUrl('image.png'),*/
-        ], function(k2, img) {
-            
-  //var image =  img;
+        ], function(require) {
   
   var pluginConf = {
       osc: true,

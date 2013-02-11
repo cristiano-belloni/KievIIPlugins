@@ -1,4 +1,4 @@
-define(['kievII', 'require'], function(k2, require) {
+define(['require'], function(require) {
 
     /* This gets returned to the host as soon as the plugin is loaded */ 
     var pluginConf = {
