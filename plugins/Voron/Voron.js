@@ -16,6 +16,8 @@ define(['require'], function(require) {
       
         var backgroundImage = resources[2];
         var knobImage = resources[3];
+		var discLeft = resources[4];
+		var discRight = resources[5];
         var nSamples = 2048;
         var fftFrameSize = 2048;
         shifterStartValue = 0;
@@ -113,6 +115,9 @@ define(['require'], function(require) {
                 /* We want 0 -> 0.5, 0.5 -> 1, 1 -> 2 */
                 /* Let's calculate the semitones */
                 var semitoneShift =  K2.MathUtils.linearRange (0, 1, -12, 12, value);
+				if (this.discrete === 1) {
+					semitoneShift = Math.round(semitoneShift);
+				}
                 /* Let's calculate the "play rate" */
                 var shift_value = Math.pow(1.0595, semitoneShift);
                 this.shiftValue = shift_value;
@@ -124,6 +129,22 @@ define(['require'], function(require) {
         
         this.ui.addElement(new K2.RotKnob(knobArgs));
         this.ui.setValue({elementID: "pitch_knob", value: 0.5});
+		
+		/* Button init */
+        var buttonArgs = {
+            ID: "discButton",
+            left: 104,
+            top: 108,
+            imagesArray : [discLeft, discRight],
+            onValueSet: function (slot, value) {
+				this.discrete = value;
+                this.ui.refresh();
+            }.bind(this),
+            isListening: true
+        };
+        
+        this.ui.addElement(new K2.Button(buttonArgs));
+		
         this.ui.refresh();
   };
   
@@ -135,7 +156,9 @@ define(['require'], function(require) {
         require ([  'https://github.com/corbanbrook/dsp.js/raw/master/dsp.js',
                     'https://github.com/janesconference/KievII/raw/master/dsp/pitchshift.js',
                     'image!'+ require.toUrl('./assets/images/Voron_bg2.png'),
-                    'image!'+ require.toUrl('./assets/images/white_big.png')],
+                    'image!'+ require.toUrl('./assets/images/white_big.png'),
+					'image!'+ require.toUrl('./assets/images/switch_l.png'),
+					'image!'+ require.toUrl('./assets/images/switch_r.png')],
                     function () {
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
