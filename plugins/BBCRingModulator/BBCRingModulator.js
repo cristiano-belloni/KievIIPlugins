@@ -19,7 +19,6 @@ define(['require'], function(require) {
         var deckImage = resources[1];
       
         // Inspired from BBC Ring Modulator: http://webaudio.prototyping.bbc.co.uk/ring-modulator/
-        console.log ("plugin inited, args is", args, "KievII object is ", K2);
         
         this.name = args.name;
         this.id = args.id;

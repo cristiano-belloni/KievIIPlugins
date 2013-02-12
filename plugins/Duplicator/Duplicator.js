@@ -8,7 +8,6 @@ define(['require'], function(require) {
   };
   
     var initPlugin = function(args) {
-        console.log ("plugin inited, args is", args, "KievII object is ", K2);
         
         this.name = args.name;
         this.id = args.id;
