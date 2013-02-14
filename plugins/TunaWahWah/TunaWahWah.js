@@ -6,7 +6,7 @@ define(['require'], function(require) {
         audioIn: 1,
         canvas: {
             width: 508,
-            height: 200
+            height: 131
         },
     };
   
@@ -22,6 +22,8 @@ define(['require'], function(require) {
         
         var knobImage =  resources[0];
         var deckImage =  resources[1];
+        var switchUpImage =  resources[2];
+        var switchDownImage =  resources[3];
         
         var tuna = new Tuna(this.context);
         
@@ -44,9 +46,9 @@ define(['require'], function(require) {
        this.viewWidth = args.canvas.width;
        this.viewHeight = args.canvas.height;
        
-       var initOffset = 34;
-       var knobSpacing = 94;
-       var knobTop = 70;
+       var initOffset = 22;
+       var knobSpacing = 83;
+       var knobTop = 20;
        this.knobDescription = [ {id: 'baseFrequency', init: 0.5, range: [0,1]},
                                 {id: 'excursionOctaves', init: 2, range: [1,6]},
                                 {id: 'sweep', init: 0.2, range: [0,1]},
@@ -107,6 +109,28 @@ define(['require'], function(require) {
              var initValue = K2.MathUtils.linearRange (currKnob.range[0], currKnob.range[1], 0, 1, currKnob.init);
              this.ui.setValue ({elementID: knobArgs.ID, value: initValue});
         }
+        
+        /* Button */
+        var buttonArgs = {
+            ID: "autoButton",
+            left: 439,
+            top: 24,
+            imagesArray : [switchDownImage, switchUpImage],
+            onValueSet: function (slot, value) {
+                if (value === 1) {
+                    this.wahwah.automode =  true;
+                }
+                else {
+                    this.wahwah.automode =  false;
+                }
+                this.ui.refresh();
+            }.bind(this),
+            isListening: true
+        };
+        
+        this.ui.addElement(new K2.Button(buttonArgs));
+        this.ui.setValue ({elementID: buttonArgs.ID, value: 1});
+       
         this.ui.refresh();
     };
     
@@ -114,7 +138,9 @@ define(['require'], function(require) {
     var initPlugin = function(initArgs) {
         var args = initArgs;
         require ([  'image!'+ require.toUrl('./assets/images/knob_64_64_64.png'),
-                    'image!'+ require.toUrl('./assets/images/TWWDeck.png')  ],
+                    'image!'+ require.toUrl('./assets/images/TWWDeck.png'),
+                    'image!'+ require.toUrl('./assets/images/switch_up.png'),
+                    'image!'+ require.toUrl('./assets/images/switch_down.png')  ],
                     function () {
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
