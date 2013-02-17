@@ -188,11 +188,22 @@ define(['require'], function(require) {
                    this.bSrc.buffer = this.audioBuffer;
                    this.bSrc.playbackRate.value = Math.pow(1.0595, stPower);
                    this.bSrc.loop = false;
-                   this.bSrc.start(0);
+				   if (typeof this.bSrc.start !== 'function') {
+				       	this.bSrc.noteOn(0);
+				   }
+				   else {
+					   	this.bSrc.start(0);
+				   }
                 }
                 else if (value === 0) {
                     if (this.stopOnLeavingKey) {
-                        this.bSrc.stop(0);
+	 				   if (typeof this.bSrc.stop !== 'function') {
+	 				       	this.bSrc.noteOff(0);
+	 				   }
+	 				   else {
+	 					   	this.bSrc.stop(0);
+	 				   }
+                        
                     }
                 }
             }
