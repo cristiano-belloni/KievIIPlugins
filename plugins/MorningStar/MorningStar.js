@@ -3,7 +3,7 @@ define(['require'], function(require) {
     /* This gets returned to the host as soon as the plugin is loaded */ 
     var pluginConf = {
         osc: true,
-        audioIn: 1,
+        audioIn: 0,
         audioOut: 1,
         canvas: {
             width: 657,
@@ -26,10 +26,11 @@ define(['require'], function(require) {
         this.id = args.id;
         
         // The sound part
-        this.audioSource = args.audioSources[0];
         this.audioDestination = args.audioDestinations[0];
         this.context = args.audioContext;
         var context = this.context;
+        this.MSS = new MorningStarSynth();
+        this.MSS.init(context, this.audioDestination);
         
         // The graphical part
         this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas}, {'breakOnFirstEvent': true});
@@ -52,6 +53,37 @@ define(['require'], function(require) {
             this.ui.refresh();
         }.bind(this);
         
+        var keyCallback = function (slot, value, element) {
+            
+            var stIndex = 0;
+            var stPower = 0;
+            var whiteKeysSemitones = [0,2,4,5,7,9,11,12,14,16,17,19,21,23,24,26,28,29,31,33,35,36];
+            var blackKeysSemitones = [1,3,6,8,10,13,15,18,20,22,25,27,30,32,34];
+            
+            if (element.indexOf("wk_") === 0) {
+                stIndex = element.split("wk_")[1];
+                stPower = whiteKeysSemitones[stIndex];
+            }
+            
+            else  if (element.indexOf("bk_") === 0) {
+                stIndex = element.split("bk_")[1];
+                stPower = blackKeysSemitones[stIndex];
+            }
+            
+            else {
+                return;
+            }
+            
+            if (value === 1) {
+                this.MSS.noteOn(stPower - 33, 127);
+            }
+            else if (value === 0) {
+                this.MSS.noteOff();
+            }
+         
+            this.ui.refresh();
+        }.bind(this);
+            
         // White keys
         var whiteKeyArgs = {
             ID: "",
@@ -107,6 +139,7 @@ define(['require'], function(require) {
             startAngValue: 218,
             stopAngValue: 501,
             onValueSet: function (slot, value) {
+                
                 this.ui.refresh();
             }.bind(this),
             isListening: true

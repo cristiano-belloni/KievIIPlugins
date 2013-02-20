@@ -80,7 +80,7 @@ if (len == 2) len = data[0].length;
             this.lastsample = this.sample;
             
             if (this.IMPLEMENT_DISTORTION === true) {
-                // 0-value gives no distortion, bypass expilicitly.
+                // 0-value gives no distortion, bypass explicitly.
                 if ((this.dist >= 0) && (this.dist < 1)) {
                     var k = 2 * this.dist / (1 - this.dist);
                     this.sample += (1 + k) * this.sample / (1+ k * Math.abs(this.sample));
@@ -125,6 +125,7 @@ MorningStarSynth.synth.init = function (sampleRate) {
     this.resonance = 100;
     this.volume = 100;
     this.portamento = 64;
+    this.bypass = false;
 }
 
 MorningStarSynth.prototype.setConvoBuffer = function (response) {
@@ -158,14 +159,12 @@ MorningStarSynth.prototype.process = function(event) {
     MorningStarSynth.synth.process (outputArray);
 }
 
-MorningStarSynth.prototype.init = function (audioParameters, context) {
+MorningStarSynth.prototype.init = function (context, destination) {
  
     this.nSamples = 2048;
     this.wsCurve = new Float32Array(this.nSamples);
 
     this.context = context;
-    
-    
 
     this.setDistortion(0);
     MorningStarSynth.synth.init(this.context.sampleRate);
@@ -174,10 +173,12 @@ MorningStarSynth.prototype.init = function (audioParameters, context) {
     this.source.onaudioprocess = this.process;
 
     // Create the convolution buffer from the impulse response
-    this.buffer = this.context.createBuffer(this.response, false);
+    /* this.buffer = this.context.createBuffer(this.response, false);
     console.log("convolution buffer passed");
     this.convolver = this.context.createConvolver();
-    this.convolver.buffer = this.buffer;
+    this.convolver.buffer = this.buffer; */
+    
+    /*this.convolver = this.context.createGainNode();
     
     // Create the sigmoid curve for  the waveshaper.
     this.createWSCurve(MorningStarSynth.synth.dist, this.nSamples);
@@ -185,14 +186,16 @@ MorningStarSynth.prototype.init = function (audioParameters, context) {
     this.sigmaDistortNode.curve = this.wsCurve;
     this.sigmaDistortNode.connect(this.convolver);
 
+    // Connect the script node to the distorsor
     this.source.connect(this.sigmaDistortNode);
 
-    // This gain note is not used at the moment. TODO.
+    // This gain note is not used at the moment.
     this.gainNode = this.context.createGainNode();
     this.convolver.connect(this.gainNode);
 
-    this.sigmaDistortNode.connect(this.context.destination);
-    this.gainNode.connect(this.context.destination);
+    this.sigmaDistortNode.connect(destination);
+    this.gainNode.connect(destination);*/
+    this.source.connect(destination);
     
 };
 
