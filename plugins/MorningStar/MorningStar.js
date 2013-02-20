@@ -17,6 +17,10 @@ define(['require'], function(require) {
         var blacKnobImage = resources[1];
         var whiteKnobImage = resources[2];
         var deckImage = resources[3];
+        var keyBlackImage = resources[4];
+        var keyWhiteImage = resources[5];
+        var keyBlackDownImage = resources[6];
+        var keyWhiteDownImage = resources[7];
         
         this.name = args.name;
         this.id = args.id;
@@ -28,7 +32,7 @@ define(['require'], function(require) {
         var context = this.context;
         
         // The graphical part
-        this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas});
+        this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas}, {'breakOnFirstEvent': true});
         
         /* BACKGROUND INIT */
         
@@ -44,6 +48,47 @@ define(['require'], function(require) {
         this.viewWidth = args.canvas.width;
         this.viewHeight = args.canvas.height;
         
+        var keyCallback = function (slot, value, element) {
+            this.ui.refresh();
+        }.bind(this);
+        
+        // White keys
+        var whiteKeyArgs = {
+            ID: "",
+            left: 0,
+            top: 0,
+            mode: 'immediate',
+            imagesArray : [keyWhiteImage, keyWhiteDownImage],
+            onValueSet: keyCallback
+        };
+        
+        for (var i = 0; i < 21; i+=1) {
+            whiteKeyArgs.top = 300;
+            whiteKeyArgs.left = 14 + i * 30;    
+            whiteKeyArgs.ID = "wk_" + i;
+            this.ui.addElement(new K2.Button(whiteKeyArgs), {zIndex: 1});
+        }
+        
+        // Black keys
+        var blackKeyArgs = {
+                ID: "",
+                left: 0,
+                top: 0,
+                mode: 'immediate',
+                imagesArray : [keyBlackImage, keyBlackDownImage],
+                onValueSet: keyCallback
+            };
+            
+            var bkArray = [34, 64, 124, 154, 184, 244, 274, 334, 364, 394, 454, 484, 544, 574, 604];
+        
+            for (var i = 0; i < bkArray.length; i+=1) {
+                blackKeyArgs.top = 299;
+                blackKeyArgs.left = bkArray[i];    
+                blackKeyArgs.ID = "bk_" + i;
+                this.ui.addElement(new K2.Button(blackKeyArgs), {zIndex: 10});
+            }
+            this.ui.refresh();
+        
   	};
   
   
@@ -52,10 +97,14 @@ define(['require'], function(require) {
     var initPlugin = function(initArgs) {
         var args = initArgs;
         require ([  
-					'image!'+ require.toUrl('./assets/js/synth.js'),
+					require.toUrl('assets/js/synth.js'),
 					'image!'+ require.toUrl('./assets/images/bknob.png'),
 					'image!'+ require.toUrl('./assets/images/wknob.png'),
-                    'image!'+ require.toUrl('./assets/images/msdeck.png')],
+                    'image!'+ require.toUrl('./assets/images/msdeck.png'),
+                    'image!'+ require.toUrl('./assets/images/keyblack.png'),
+                    'image!'+ require.toUrl('./assets/images/keywhite.png'),
+                    'image!'+ require.toUrl('./assets/images/keyblack_down.png'),
+                    'image!'+ require.toUrl('./assets/images/keywhite_down.png')],
                     function () {
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
