@@ -21,7 +21,6 @@ MorningStarSynth.synth = {
     /* unsigned int */ resonance : 100,
     /* unsigned int */ volume : 100,
     /* unsigned int */ portamento : 64,
-    dist : 0
 };
 
 MorningStarSynth.synth.tanh = function (arg) {
@@ -79,14 +78,6 @@ if (len == 2) len = data[0].length;
             this.sample = this.sample * 0.5 + this.lastsample * 0.5;
             this.lastsample = this.sample;
             
-            if (this.IMPLEMENT_DISTORTION === true) {
-                // 0-value gives no distortion, bypass explicitly.
-                if ((this.dist >= 0) && (this.dist < 1)) {
-                    var k = 2 * this.dist / (1 - this.dist);
-                    this.sample += (1 + k) * this.sample / (1+ k * Math.abs(this.sample));
-                }
-            }
-            
             // Velocity control does nothing, had to use it as a gain here.
             var curr_sample = this.sample * (this.volume / 127) * (this.vel / 127) ;
             
@@ -128,28 +119,6 @@ MorningStarSynth.synth.init = function (sampleRate) {
     this.bypass = false;
 }
 
-MorningStarSynth.prototype.setConvoBuffer = function (response) {
-    this.response = response;
-}
-
-MorningStarSynth.prototype.createWSCurve = function (amount, n_samples) {
-    
-    if ((amount >= 0) && (amount < 1)) {
-        
-        MorningStarSynth.synth.dist = amount;
-
-        var k = 2 * MorningStarSynth.synth.dist / (1 - MorningStarSynth.synth.dist);
-
-        for (var i = 0; i < n_samples; i+=1) {
-            // LINEAR INTERPOLATION: x := (c - a) * (z - y) / (b - a) + y
-            // a = 0, b = 2048, z = 1, y = -1, c = i
-            var x = (i - 0) * (1 - (-1)) / (n_samples - 0) + (-1);
-            this.wsCurve[i] = (1 + k) * x / (1+ k * Math.abs(x));
-        }
-   
-    }
-}
-
 MorningStarSynth.prototype.process = function(event) {
     // Get left/right input and output arrays
     var outputArray = [];
@@ -166,36 +135,15 @@ MorningStarSynth.prototype.init = function (context, destination) {
 
     this.context = context;
 
-    this.setDistortion(0);
     MorningStarSynth.synth.init(this.context.sampleRate);
 
     this.source = this.context.createJavaScriptNode(this.nSamples);
     this.source.onaudioprocess = this.process;
 
-    // Create the convolution buffer from the impulse response
-    /* this.buffer = this.context.createBuffer(this.response, false);
-    console.log("convolution buffer passed");
-    this.convolver = this.context.createConvolver();
-    this.convolver.buffer = this.buffer; */
-    
-    /*this.convolver = this.context.createGainNode();
-    
-    // Create the sigmoid curve for  the waveshaper.
-    this.createWSCurve(MorningStarSynth.synth.dist, this.nSamples);
-    this.sigmaDistortNode = this.context.createWaveShaper();
-    this.sigmaDistortNode.curve = this.wsCurve;
-    this.sigmaDistortNode.connect(this.convolver);
-
-    // Connect the script node to the distorsor
-    this.source.connect(this.sigmaDistortNode);
-
-    // This gain note is not used at the moment.
     this.gainNode = this.context.createGainNode();
-    this.convolver.connect(this.gainNode);
+	this.source.connect(this.gainNode);
+    this.gainNode.connect(destination);
 
-    this.sigmaDistortNode.connect(destination);
-    this.gainNode.connect(destination);*/
-    this.source.connect(destination);
     
 };
 
@@ -222,6 +170,8 @@ MorningStarSynth.prototype.noteOff = function (noteNum) {
     }
 }
 
+// Setters
+
 MorningStarSynth.prototype.setCutoff = function (cutoffValue) {
     MorningStarSynth.synth.cutoff = cutoffValue;
 }
@@ -243,24 +193,39 @@ MorningStarSynth.prototype.setEnvelope = function (envValue) {
 }
 
 MorningStarSynth.prototype.setVolume = function (volValue) {
-    MorningStarSynth.synth.volume = volValue;
+    this.gainNode.gain.value = volValue;
 }
 
 MorningStarSynth.prototype.setBypass = function (bypassON) {
     MorningStarSynth.synth.bypass = bypassON;
 }
 
-MorningStarSynth.prototype.setReverb = function (revValue) {
-    this.gainNode.gain.value = revValue;
+//Getters
+
+MorningStarSynth.prototype.getCutoff = function () {
+    return MorningStarSynth.synth.cutoff;
 }
 
-MorningStarSynth.prototype.setDistortion = function (distValue) {
-    var distCorrect = distValue;
-    if (distValue < -1) {
-        distCorrect = -1;
-    }
-    if (distValue >= 1) {
-        distCorrect = 0.985;
-    }
-    this.createWSCurve (distCorrect, this.nSamples);
+MorningStarSynth.prototype.getResonance = function () {
+    return MorningStarSynth.synth.resonance;
+}
+
+MorningStarSynth.prototype.getPortamento = function () {
+    return MorningStarSynth.synth.portamento;
+}
+
+MorningStarSynth.prototype.getRelease = function () {
+    return MorningStarSynth.synth.release;
+}
+
+MorningStarSynth.prototype.getEnvelope = function () {
+    return MorningStarSynth.synth.envmod;
+}
+
+MorningStarSynth.prototype.getVolume = function () {
+    return this.gainNode.gain.value;
+}
+
+MorningStarSynth.prototype.getBypass = function () {
+    return MorningStarSynth.synth.bypass;
 }

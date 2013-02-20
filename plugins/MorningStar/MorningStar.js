@@ -29,6 +29,9 @@ define(['require'], function(require) {
         this.audioDestination = args.audioDestinations[0];
         this.context = args.audioContext;
         var context = this.context;
+		
+		this.velocity = 1;
+		
         this.MSS = new MorningStarSynth();
         this.MSS.init(context, this.audioDestination);
         
@@ -75,7 +78,7 @@ define(['require'], function(require) {
             }
             
             if (value === 1) {
-                this.MSS.noteOn(stPower - 33, 127);
+                this.MSS.noteOn(stPower - 33, this.velocity);
             }
             else if (value === 0) {
                 this.MSS.noteOff();
@@ -120,13 +123,12 @@ define(['require'], function(require) {
                 this.ui.addElement(new K2.Button(blackKeyArgs), {zIndex: 10});
             }
             
-        this.knobDescription = [ {id: 'envelope', init: 0, type: 'white'},
-                                 {id: 'release', init: 0, type: 'white'},
-                                 {id: 'cutoff', init: 0, type: 'white'},
-                                 {id: 'resonance', init: 0, type: 'white'},
-                                 {id: 'reverb', init: 0, type: 'black'},
-                                 {id: 'distortion', init: 0, type: 'black'},
-                                 {id: 'volume', init: 0, type: 'black'},
+        this.knobDescription = [ {id: 'envelope', init: K2.MathUtils.linearRange (0, 127, 0, 1, this.MSS.getEnvelope()), type: 'white'},
+                                 {id: 'release', init: K2.MathUtils.linearRange (0, 127, 0, 1, this.MSS.getRelease()), type: 'white'},
+                                 {id: 'cutoff', init: K2.MathUtils.linearRange (0, 127, 0, 1, this.MSS.getCutoff()), type: 'white'},
+                                 {id: 'resonance', init: K2.MathUtils.linearRange (0, 127, 0, 1, this.MSS.getResonance()), type: 'white'},
+                                 {id: 'velocity', init: this.velocity, type: 'black'},
+                                 {id: 'volume', init: this.MSS.getVolume(), type: 'black'},
                               ];
         /* KNOB INIT */
        var knobArgs = {
@@ -138,7 +140,33 @@ define(['require'], function(require) {
             initAngValue: 270,
             startAngValue: 218,
             stopAngValue: 501,
-            onValueSet: function (slot, value) {
+            onValueSet: function (slot, value, element) {
+				switch (element) {
+					case 'volume':
+						this.MSS.setVolume(value);
+					    break;
+					case 'velocity':
+						var velocity = K2.MathUtils.linearRange (0, 1, 0, 127, value);
+						this.velocity = Math.round(velocity);
+					    break;
+					case 'envelope':
+						var envelope = K2.MathUtils.linearRange (0, 1, 0, 127, value);
+						this.MSS.setEnvelope(envelope);
+					    break;
+					case 'release':
+						var release = K2.MathUtils.linearRange (0, 1, 0, 127, value);
+						this.MSS.setRelease(release);
+						break;
+					case 'cutoff':
+						var cutoff = K2.MathUtils.linearRange (0, 1, 0, 127, value);
+						this.MSS.setCutoff(cutoff);
+					    break;	
+					case 'resonance':
+						var resonance = K2.MathUtils.linearRange (0, 1, 0, 127, value);
+						this.MSS.setResonance(resonance);
+					    break;	
+					
+				}
                 
                 this.ui.refresh();
             }.bind(this),
@@ -147,7 +175,7 @@ define(['require'], function(require) {
         
         var whiteInit = 44;
         var whiteSpacing = 165;
-        var blackInit = 346;
+        var blackInit = 347;
         var blackSpacing = 101;
         var whiteTop = 34;
         var blackTop = 180;
@@ -165,7 +193,7 @@ define(['require'], function(require) {
             else if (currKnob.type === 'black') {
                 knobArgs.image = blackKnobImage;
                 knobArgs.top = blackTop;
-                knobArgs.left = (blackInit + (i - 4) * blackSpacing);
+                knobArgs.left = (blackInit + (i - 3) * blackSpacing);
             }
              
             this.ui.addElement(new K2.RotKnob(knobArgs));
