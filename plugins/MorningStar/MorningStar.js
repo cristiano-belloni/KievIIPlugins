@@ -14,7 +14,7 @@ define(['require'], function(require) {
     /* This gets called when all the resources are loaded */
     var pluginFunction = function (args, resources) {
         var synth = resources[0];
-        var blacKnobImage = resources[1];
+        var blackKnobImage = resources[1];
         var whiteKnobImage = resources[2];
         var deckImage = resources[3];
         var keyBlackImage = resources[4];
@@ -87,7 +87,60 @@ define(['require'], function(require) {
                 blackKeyArgs.ID = "bk_" + i;
                 this.ui.addElement(new K2.Button(blackKeyArgs), {zIndex: 10});
             }
-            this.ui.refresh();
+            
+        this.knobDescription = [ {id: 'envelope', init: 0, type: 'white'},
+                                 {id: 'release', init: 0, type: 'white'},
+                                 {id: 'cutoff', init: 0, type: 'white'},
+                                 {id: 'resonance', init: 0, type: 'white'},
+                                 {id: 'reverb', init: 0, type: 'black'},
+                                 {id: 'distortion', init: 0, type: 'black'},
+                                 {id: 'volume', init: 0, type: 'black'},
+                              ];
+        /* KNOB INIT */
+       var knobArgs = {
+            ID: '',
+            left: 0 ,
+            top: 0,
+            image : null,
+            sensitivity : 5000,
+            initAngValue: 270,
+            startAngValue: 218,
+            stopAngValue: 501,
+            onValueSet: function (slot, value) {
+                this.ui.refresh();
+            }.bind(this),
+            isListening: true
+        };
+        
+        var whiteInit = 44;
+        var whiteSpacing = 165;
+        var blackInit = 346;
+        var blackSpacing = 101;
+        var whiteTop = 34;
+        var blackTop = 180;
+        
+        for (var i = 0; i < this.knobDescription.length; i+=1) {
+            var currKnob = this.knobDescription[i];
+            
+            knobArgs.ID = currKnob.id;
+            
+            if (currKnob.type === 'white') {
+                knobArgs.image = whiteKnobImage;
+                knobArgs.top = whiteTop;
+                knobArgs.left = (whiteInit + i * whiteSpacing);
+             }
+            else if (currKnob.type === 'black') {
+                knobArgs.image = blackKnobImage;
+                knobArgs.top = blackTop;
+                knobArgs.left = (blackInit + (i - 4) * blackSpacing);
+            }
+             
+            this.ui.addElement(new K2.RotKnob(knobArgs));
+            var initValue = currKnob.init;
+            this.ui.setValue ({elementID: knobArgs.ID, value: initValue});
+        }    
+            
+        this.ui.refresh();
         
   	};
   
