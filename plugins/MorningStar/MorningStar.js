@@ -49,6 +49,24 @@ define(['require'], function(require) {
     
         this.ui.addElement(bgArgs, {zIndex: 0});
         
+        /* LABEL INIT */
+        this.label = new K2.Label({
+            ID: 'statusLabel',
+            width : 320,
+            height : 29,
+            top : 196,
+            left : 42,
+            transparency: 0.87,
+            objParms: {
+                font: "28px VT323",
+                textColor: "#000",
+                textBaseline: "top",
+                textAlignment: "left"
+            }
+        });
+        this.ui.addElement(this.label, {zIndex: 3});
+       
+        /* KEYS */
         this.viewWidth = args.canvas.width;
         this.viewHeight = args.canvas.height;
         
@@ -144,26 +162,32 @@ define(['require'], function(require) {
 				switch (element) {
 					case 'volume':
 						this.MSS.setVolume(value);
+						this.ui.setValue({elementID: "statusLabel", value: "Volume: " + Math.round(value * 127)});
 					    break;
 					case 'velocity':
 						var velocity = K2.MathUtils.linearRange (0, 1, 0, 127, value);
 						this.velocity = Math.round(velocity);
+						this.ui.setValue({elementID: "statusLabel", value: "Velocity: " + this.velocity});
 					    break;
 					case 'envelope':
 						var envelope = K2.MathUtils.linearRange (0, 1, 0, 127, value);
 						this.MSS.setEnvelope(envelope);
+						this.ui.setValue({elementID: "statusLabel", value: "Envelope: " + Math.round(envelope)});
 					    break;
 					case 'release':
 						var release = K2.MathUtils.linearRange (0, 1, 0, 127, value);
 						this.MSS.setRelease(release);
+						this.ui.setValue({elementID: "statusLabel", value: "Release: " + Math.round(release)});
 						break;
 					case 'cutoff':
 						var cutoff = K2.MathUtils.linearRange (0, 1, 0, 127, value);
 						this.MSS.setCutoff(cutoff);
+						this.ui.setValue({elementID: "statusLabel", value: "Cutoff: " + Math.round(cutoff)});
 					    break;	
 					case 'resonance':
 						var resonance = K2.MathUtils.linearRange (0, 1, 0, 127, value);
 						this.MSS.setResonance(resonance);
+						this.ui.setValue({elementID: "statusLabel", value: "Resonance: " + Math.round(resonance)});
 					    break;	
 					
 				}
@@ -200,7 +224,7 @@ define(['require'], function(require) {
             var initValue = currKnob.init;
             this.ui.setValue ({elementID: knobArgs.ID, value: initValue});
         }    
-            
+        this.ui.setValue({elementID: "statusLabel", value: "MorningStar ready."});    
         this.ui.refresh();
         
   	};
@@ -218,7 +242,9 @@ define(['require'], function(require) {
                     'image!'+ require.toUrl('./assets/images/keyblack.png'),
                     'image!'+ require.toUrl('./assets/images/keywhite.png'),
                     'image!'+ require.toUrl('./assets/images/keyblack_down.png'),
-                    'image!'+ require.toUrl('./assets/images/keywhite_down.png')],
+                    'image!'+ require.toUrl('./assets/images/keywhite_down.png'),
+                    'font!google,families:[VT323]',
+                    ],
                     function () {
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
