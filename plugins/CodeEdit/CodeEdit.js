@@ -22,17 +22,15 @@ define(['require'], function(require) {
         
          /* This is an hack! */
         
-        var myTextArea = document.createElement("div");
-        myTextArea.id = "CodeEditTextArea";
+        var CodeArea = document.createElement("div");
+        CodeArea.id = "CodeArea";
         
-        myTextArea.style.width = canvas.width + "px";
-        myTextArea.style.height = canvas.height + "px";
+        CodeArea.style.width = pluginConf.canvas.width + "px";
+        CodeArea.style.height = pluginConf.canvas.height + "px";
  
-        args.canvas.parentNode.replaceChild(myTextArea, args.canvas);
+        args.canvas.parentNode.replaceChild(CodeArea, args.canvas);
         
-        var pn = myTextArea;
-        
-        var editor = ace.edit(pn);
+        var editor = ace.edit(CodeArea);
         editor.setFontSize("14px");
         editor.setTheme("ace/theme/mono_industrial");
         editor.getSession().setMode("ace/mode/javascript");
@@ -43,19 +41,7 @@ define(['require'], function(require) {
     var initPlugin = function(initArgs) {
         var args = initArgs;
         
-        function loadCss(url) {
-            var link = document.createElement("link");
-            link.type = "text/css";
-            link.rel = "stylesheet";
-            link.href = url;
-            document.getElementsByTagName("head")[0].appendChild(link);
-        }
-        
-        //loadCss (require.toUrl('./codemirror-3.1/lib/codemirror.css'));
-        
-        require ([  require.toUrl('assets/js/codemirror-compressed.js'),
-                    'http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js'
-                 ],
+        require (['http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js'],
                     function () {
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
