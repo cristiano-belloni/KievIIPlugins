@@ -20,13 +20,15 @@ define(['require'], function(require) {
         this.audioDestination = args.audioDestinations[0];
         this.context = args.audioContext;
         this.userFunc;
+        this.sbSrcAudioNode;
+        this.sbDestAudioNode;
         
         function Sandbox (source, dest, context) {
             this.source = source;
             this.dest = dest;
             this.context = context;
         }
-        this.sandbox = new Sandbox (this.audioSource, this.audioDestination, this.context);
+        
          /* This is an hack! */
         
         var CodeArea = document.createElement("div");
@@ -50,8 +52,15 @@ define(['require'], function(require) {
                 console.log ("Intercepted save command, editor is", editor);
                 var code = editor.getValue();
                 console.log ("And code is", code);
+                this.audioSource.disconnect && this.audioSource.disconnect();
+                this.sbDstAudioNode && this.sbDstAudioNode.disconnect(); 
+                this.sbSrcAudioNode = this.context.createGainNode();
+                this.sbDstAudioNode = this.context.createGainNode();
+                this.audioSource.connect(this.sbSrcAudioNode);
+                this.sbDstAudioNode.connect(this.audioDestination);
+                var sandbox = new Sandbox (this.sbSrcAudioNode, this.sbDstAudioNode, this.context);
                 var userFunc = Function (code);
-                userFunc.call(this.sandbox);
+                userFunc.call(sandbox);
             }.bind(this),
             readOnly: true // false if this command should not apply in readOnly mode
         });
