@@ -19,7 +19,14 @@ define(['require'], function(require) {
         this.audioSource = args.audioSources[0];
         this.audioDestination = args.audioDestinations[0];
         this.context = args.audioContext;
+        this.userFunc;
         
+        function Sandbox (source, dest, context) {
+            this.source = source;
+            this.dest = dest;
+            this.context = context;
+        }
+        this.sandbox = new Sandbox (this.audioSource, this.audioDestination, this.context);
          /* This is an hack! */
         
         var CodeArea = document.createElement("div");
@@ -34,6 +41,20 @@ define(['require'], function(require) {
         editor.setFontSize("14px");
         editor.setTheme("ace/theme/mono_industrial");
         editor.getSession().setMode("ace/mode/javascript");
+        editor.setValue("// This is the code to execute");
+        
+        editor.commands.addCommand({
+            name: 'saveCommand',
+            bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+            exec: function(editor) {
+                console.log ("Intercepted save command, editor is", editor);
+                var code = editor.getValue();
+                console.log ("And code is", code);
+                var userFunc = Function (code);
+                userFunc.call(this.sandbox);
+            }.bind(this),
+            readOnly: true // false if this command should not apply in readOnly mode
+        });
         
     };
     
