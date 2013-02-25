@@ -4,7 +4,6 @@ define(['require'], function(require) {
       osc: true,
       audioOut: 2,
       audioIn: 1,
-      canvas: false,
   };
   
     var initPlugin = function(args) {
