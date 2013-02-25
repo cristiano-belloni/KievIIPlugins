@@ -29,17 +29,16 @@ define(['require'], function(require) {
             this.context = context;
         }
         
-         /* This is an hack! */
+         /* Replacing the div, same origin policies in ace */
+        var CodeArea = document.createElement("div");
+        CodeArea.id = "CodeArea";
         
-        //var CodeArea = document.createElement("div");
-        //CodeArea.id = "CodeArea";
-        
-        //CodeArea.style.width = pluginConf.canvas.width + "px";
-        //CodeArea.style.height = pluginConf.canvas.height + "px";
+        CodeArea.style.width = pluginConf.div.width + "px";
+        CodeArea.style.height = pluginConf.div.height + "px";
  
-        //args.canvas.parentNode.replaceChild(CodeArea, args.canvas);
+        args.div.parentNode.replaceChild(CodeArea, args.div);
         
-        var editor = ace.edit(args.div);
+        var editor = ace.edit(CodeArea);
         editor.setFontSize("14px");
         editor.setTheme("ace/theme/mono_industrial");
         editor.getSession().setMode("ace/mode/javascript");
