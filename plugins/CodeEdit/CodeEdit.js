@@ -4,7 +4,7 @@ define(['require'], function(require) {
         osc: true,
         audioOut: 1,
         audioIn: 1,
-        canvas: {
+        div: {
             width: 600,
             height: 400
         },
@@ -31,15 +31,15 @@ define(['require'], function(require) {
         
          /* This is an hack! */
         
-        var CodeArea = document.createElement("div");
-        CodeArea.id = "CodeArea";
+        //var CodeArea = document.createElement("div");
+        //CodeArea.id = "CodeArea";
         
-        CodeArea.style.width = pluginConf.canvas.width + "px";
-        CodeArea.style.height = pluginConf.canvas.height + "px";
+        //CodeArea.style.width = pluginConf.canvas.width + "px";
+        //CodeArea.style.height = pluginConf.canvas.height + "px";
  
-        args.canvas.parentNode.replaceChild(CodeArea, args.canvas);
+        //args.canvas.parentNode.replaceChild(CodeArea, args.canvas);
         
-        var editor = ace.edit(CodeArea);
+        var editor = ace.edit(args.div);
         editor.setFontSize("14px");
         editor.setTheme("ace/theme/mono_industrial");
         editor.getSession().setMode("ace/mode/javascript");
