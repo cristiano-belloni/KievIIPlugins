@@ -45,7 +45,7 @@ define(['require'], function(require) {
        var knobSpacing = 83;
        var knobTop = 20;
        this.knobDescription = [ {id: 'rate', init: 1.5, range: [0.01,8]},
-                                {id: 'feedback', init: 0.2, range: 0,1]},
+                                {id: 'feedback', init: 0.2, range: [0,1]},
                                 {id: 'delay', init: 0.0045, range: [0,1]}
                               ];
 
