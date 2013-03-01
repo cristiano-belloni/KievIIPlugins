@@ -4,7 +4,10 @@ define(['require'], function(require) {
         osc: true,
         audioOut: 1,
         audioIn: 0,
-        canvas: false,
+        canvas: {
+            width: 274,
+            height: 180
+        },
     };
   
     var pluginFunction = function (args, resources) {
@@ -13,6 +16,8 @@ define(['require'], function(require) {
         this.id = args.id;
         this.audioDestination = args.audioDestinations[0];
         this.context = args.audioContext;
+        var knobImage =  resources[0];
+        
         /* From 40 to 100 */
         this.baseNote = 44;
         /* From 1 to 40 */
@@ -125,7 +130,12 @@ define(['require'], function(require) {
             
         }
         
-        this.generate();
+        this.changeVoices = function(voices) {
+            this.nOsc = voices;
+            this.reset();
+        }
+        
+        //this.generate();
         
         /*this.sign = "plus";
         var testFunc = function () {
@@ -146,12 +156,78 @@ define(['require'], function(require) {
         }.bind(this);
         
         setInterval (testFunc, 300);*/
+       
+       // The UI
+       this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas});
+        
+       this.viewWidth = args.canvas.width;
+       this.viewHeight = args.canvas.height;
+       
+       var noteKnobArgs = {
+            imagesArray : [knobImage],
+            tileWidth: 60,
+            tileHeight: 60,
+            imageNum: 61,
+            bottomAngularOffset: 33,
+            ID: this.name + "noteKnob",
+            left: 30,
+            top: 60,
+            onValueSet: function(slot, value) {            
+                var noteValue = Math.round(K2.MathUtils.linearRange(0, 1, 40, 100, value));
+                this.changeNote (noteValue);
+                this.ui.refresh();
+            }.bind(this),
+            isListening : true
+        };
+            
+        var voiceKnobArgs = {
+                imagesArray : [knobImage],
+                tileWidth: 60,
+                tileHeight: 60,
+                imageNum: 61,
+                bottomAngularOffset: 33,
+                ID: this.name + "voiceKnob",
+                left: 120,
+                top: 60,
+                onValueSet : function(slot, value) {            
+                    var voiceValue = Math.round(K2.MathUtils.linearRange(0, 1, 1, 40, value));
+                    this.changeVoices (voiceValue);
+                    this.ui.refresh();
+                }.bind(this),
+                isListening : true
+        };
+            
+        this.ui.addElement(new K2.Knob(noteKnobArgs));
+        
+        this.ui.setValue({
+            elementID : noteKnobArgs.ID,
+            slot : 'knobvalue',
+            value : K2.MathUtils.linearRange(40, 100, 0, 1, 44)
+        });
+    
+        this.ui.addElement(new K2.Knob(voiceKnobArgs));
+        this.ui.setValue({
+            elementID : voiceKnobArgs.ID,
+            slot : 'knobvalue',
+            value : K2.MathUtils.linearRange(1, 40, 0, 1, 14)
+        });
+        
+        this.ui.refresh();
     };
   
     var initPlugin = function(initArgs) {
         var args = initArgs;
-        var resources = null;
-        pluginFunction.call (this, args, resources);        
+        require ([  'image!'+ require.toUrl('./assets/images/knob_60_60_61f.png') ],
+                    function () {
+                        var resources = arguments;
+                        pluginFunction.call (this, args, resources);
+                    }.bind(this),
+                    function (err) {
+                        console.error ("Error loading resources");
+                        var failedId = err.requireModules && err.requireModules[0];
+                        requirejs.undef(failedId);
+                        args.K2HInterface.pluginError (args.id, "Error loading resources");
+                    }); 
     };
     
     return {
