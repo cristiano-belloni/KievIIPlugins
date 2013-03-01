@@ -29,20 +29,13 @@ define(['require'], function(require) {
             this.context = context;
         }
         
-         /* Replacing the div, same origin policies in ace */
-        var CodeArea = document.createElement("div");
-        CodeArea.id = "CodeArea";
-        
-        CodeArea.style.width = pluginConf.div.width + "px";
-        CodeArea.style.height = pluginConf.div.height + "px";
- 
-        args.div.parentNode.replaceChild(CodeArea, args.div);
-        
-        var editor = ace.edit(CodeArea);
+        var editor = ace.edit(this.CodeArea);
         editor.setFontSize("14px");
         editor.setTheme("ace/theme/mono_industrial");
         editor.getSession().setMode("ace/mode/javascript");
-        editor.setValue("// This is the code to execute");
+        editor.setValue("// Ctrl-S or Cmd-S when code window is on focus executes code.\n// this.source = source node\n// this.dest = destination node\n// this.context = audio context\n// Example: this.source.connect (this.dest);");
+        //args.div.parentNode.replaceChild(CodeArea, args.div);
+		args.div.appendChild(this.CodeArea);
         
         editor.commands.addCommand({
             name: 'saveCommand',
@@ -69,8 +62,15 @@ define(['require'], function(require) {
     
     var initPlugin = function(initArgs) {
         var args = initArgs;
+		
+        this.CodeArea = document.createElement("div");
+        this.CodeArea.id = "CodeArea";
         
-        require (['http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js'],
+        this.CodeArea.style.width = pluginConf.div.width + "px";
+        this.CodeArea.style.height = pluginConf.div.height + "px";
+        
+        //require (['http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js'],
+        require ([require.toUrl('ace-builds/src-min-noconflict/ace.js')],
                     function () {
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
