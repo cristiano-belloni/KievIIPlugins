@@ -24,6 +24,7 @@ define(['require'], function(require) {
         this.gainNode.connect(this.audioDestination);
         
         this.noiseNodes = [];
+        this.noiseFilters = [];
         this.bufferLen = 4096;
         
         this.createNoiseGen = function (freq) {
@@ -52,7 +53,8 @@ define(['require'], function(require) {
           }.bind(this);
           noiseSource.connect(filter);
           this.noiseNodes.push(noiseSource);
-        
+          this.noiseFilters.push(filter);
+
           setInterval(function () {
             x = x + rand(-0.1, 0.1);
             y = y + rand(-0.1, 0.1);
@@ -87,10 +89,63 @@ define(['require'], function(require) {
           while (this.noiseNodes.length){
             this.noiseNodes.pop().disconnect();
           }
+          while (this.noiseFilters.length) {
+            this.noiseFilters.pop().disconnect();
+          }
           this.generate();
         }
         
+        this.generateWithParams = function(note, voices) {
+            if (typeof voices === 'number') {
+                this.baseNote = note;
+            }
+            if (typeof voices === 'number') {
+                this.nOsc = voices;
+            }
+            this.reset();
+        }
+        
+        this.changeNote = function(note) {
+            
+            var len = this.noiseFilters.length;
+            
+            if (len === 0) {
+                this.generateWithParams (note);
+                return;
+            }
+            
+            this.baseNote = note;
+            
+            for (var i = 0; i < len; i+=1) {
+                var degree = Math.floor(Math.random() * this.scale.length);
+                var freq = mtof(this.baseNote + this.scale[degree]);
+                freq += Math.random() * 4 - 2;
+                this.noiseFilters[i].frequency.value = freq;
+            }
+            
+        }
+        
         this.generate();
+        
+        /*this.sign = "plus";
+        var testFunc = function () {
+            if (this.baseNote === 100) {
+                this.sign = "minus";
+            }
+            if (this.baseNote === 40) {
+                this.sign = "plus";
+            }
+            if (this.sign === "plus") {
+                console.log ("changing note to", this.baseNote + 1);
+                this.changeNote (this.baseNote + 1);
+            }
+            if (this.sign === "minus") {
+                console.log ("changing note to", this.baseNote - 1);
+                this.changeNote (this.baseNote - 1);
+            } 
+        }.bind(this);
+        
+        setInterval (testFunc, 300);*/
     };
   
     var initPlugin = function(initArgs) {
