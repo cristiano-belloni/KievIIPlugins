@@ -34,6 +34,7 @@ define(['require'], function(require) {
         editor.setTheme("ace/theme/mono_industrial");
         editor.getSession().setMode("ace/mode/javascript");
         editor.setValue("// Ctrl-S or Cmd-S when code window is on focus executes code.\n// this.source = source node\n// this.dest = destination node\n// this.context = audio context\n// Example: this.source.connect (this.dest);");
+        editor.clearSelection();
         //args.div.parentNode.replaceChild(CodeArea, args.div);
 		args.div.appendChild(this.CodeArea);
         
