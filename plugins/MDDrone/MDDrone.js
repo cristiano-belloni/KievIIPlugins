@@ -17,6 +17,7 @@ define(['require'], function(require) {
         this.audioDestination = args.audioDestinations[0];
         this.context = args.audioContext;
         var knobImage =  resources[0];
+		var deckImage =  resources[1];
         
         /* From 40 to 100 */
         this.baseNote = 44;
@@ -162,6 +163,16 @@ define(['require'], function(require) {
         
        this.viewWidth = args.canvas.width;
        this.viewHeight = args.canvas.height;
+	   
+       /* deck */
+      var bgArgs = new K2.Background({
+           ID: 'background',
+           image: deckImage,
+           top: 0,
+           left: 0
+       });
+    
+       this.ui.addElement(bgArgs, {zIndex: 0});
        
        var noteKnobArgs = {
             imagesArray : [knobImage],
@@ -170,8 +181,8 @@ define(['require'], function(require) {
             imageNum: 61,
             bottomAngularOffset: 33,
             ID: this.name + "noteKnob",
-            left: 30,
-            top: 60,
+            left: 38,
+            top: 57,
             onValueSet: function(slot, value) {            
                 var noteValue = Math.round(K2.MathUtils.linearRange(0, 1, 40, 100, value));
                 this.changeNote (noteValue);
@@ -187,8 +198,8 @@ define(['require'], function(require) {
                 imageNum: 61,
                 bottomAngularOffset: 33,
                 ID: this.name + "voiceKnob",
-                left: 120,
-                top: 60,
+                left: 178,
+                top: 57,
                 onValueSet : function(slot, value) {            
                     var voiceValue = Math.round(K2.MathUtils.linearRange(0, 1, 1, 40, value));
                     this.changeVoices (voiceValue);
@@ -217,7 +228,8 @@ define(['require'], function(require) {
   
     var initPlugin = function(initArgs) {
         var args = initArgs;
-        require ([  'image!'+ require.toUrl('./assets/images/knob_60_60_61f.png') ],
+        require ([  'image!'+ require.toUrl('./assets/images/knob_60_60_61f.png'),
+			 		'image!'+ require.toUrl('./assets/images/MDDDeck.png')],
                     function () {
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
