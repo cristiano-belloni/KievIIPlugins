@@ -158,21 +158,52 @@ define(['require'], function(require) {
         
         setInterval (testFunc, 300);*/
        
-       // The UI
-       this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas});
-        
-       this.viewWidth = args.canvas.width;
-       this.viewHeight = args.canvas.height;
+        // The UI
+        this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas});
+
+        this.viewWidth = args.canvas.width;
+        this.viewHeight = args.canvas.height;
 	   
-       /* deck */
-      var bgArgs = new K2.Background({
-           ID: 'background',
-           image: deckImage,
-           top: 0,
-           left: 0
-       });
-    
-       this.ui.addElement(bgArgs, {zIndex: 0});
+        /* deck */
+        var bgArgs = new K2.Background({
+            ID: 'background',
+            image: deckImage,
+            top: 0,
+            left: 0
+        });
+   
+        this.ui.addElement(bgArgs, {zIndex: 0});
+        /* labels */
+        var freqLabel = new K2.Label({
+            ID: 'freqLabel',
+            width : 100,
+            height : 20,
+            top : 127,
+            left : 28,
+            transparency: 0.87,
+            objParms: {
+                font: "20px VT323",
+                textColor: "#000",
+                textBaseline: "top",
+                textAlignment: "left"
+            }
+        });
+        var voiceLabel = new K2.Label({
+            ID: 'voiceLabel',
+            width : 100,
+            height : 20,
+            top : 127,
+            left : 168,
+            transparency: 0.87,
+            objParms: {
+                font: "20px VT323",
+                textColor: "#000",
+                textBaseline: "top",
+                textAlignment: "left"
+            }
+        });
+        this.ui.addElement(freqLabel, {zIndex: 3});
+        this.ui.addElement(voiceLabel, {zIndex: 3});
        
        var noteKnobArgs = {
             imagesArray : [knobImage],
@@ -185,7 +216,14 @@ define(['require'], function(require) {
             top: 57,
             onValueSet: function(slot, value) {            
                 var noteValue = Math.round(K2.MathUtils.linearRange(0, 1, 40, 100, value));
+                var padVaule = (noteValue >= 100) ? '' : ' ';
+                var labelValue = padVaule + noteValue.toFixed(2) + " Hz";
                 this.changeNote (noteValue);
+                this.ui.setValue({
+                    elementID : 'freqLabel',
+                    slot : 'labelvalue',
+                    value : labelValue
+                });
                 this.ui.refresh();
             }.bind(this),
             isListening : true
@@ -202,7 +240,15 @@ define(['require'], function(require) {
                 top: 57,
                 onValueSet : function(slot, value) {            
                     var voiceValue = Math.round(K2.MathUtils.linearRange(0, 1, 1, 40, value));
+                    var padVaule = (voiceValue >= 10) ? '' : ' ';
+                    var voiceString = (voiceValue === 1) ? ' Voice' : ' Voices';
+                    var labelValue = padVaule + voiceValue + voiceString;
                     this.changeVoices (voiceValue);
+                    this.ui.setValue({
+                        elementID : 'voiceLabel',
+                        slot : 'labelvalue',
+                        value : labelValue
+                    });
                     this.ui.refresh();
                 }.bind(this),
                 isListening : true
@@ -229,7 +275,8 @@ define(['require'], function(require) {
     var initPlugin = function(initArgs) {
         var args = initArgs;
         require ([  'image!'+ require.toUrl('./assets/images/knob_60_60_61f.png'),
-			 		'image!'+ require.toUrl('./assets/images/MDDDeck.png')],
+			 		'image!'+ require.toUrl('./assets/images/MDDDeck.png'),
+			 		'font!google,families:[VT323]'],
                     function () {
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
