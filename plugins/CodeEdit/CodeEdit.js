@@ -52,8 +52,21 @@ define(['require'], function(require) {
                 this.audioSource.connect(this.sbSrcAudioNode);
                 this.sbDstAudioNode.connect(this.audioDestination);
                 var sandbox = new Sandbox (this.sbSrcAudioNode, this.sbDstAudioNode, this.context);
-                var userFunc = Function (code);
-                userFunc.call(sandbox);
+                var userFunc;
+                try {
+                    userFunc = Function (code);
+                } 
+                catch (e) {
+                    console.error ('Exception catched parsing the code: ', e);
+                    return;
+                }
+                try {
+                    userFunc.call(sandbox);
+                }
+                catch (e) {
+                    console.error ('Exception catched executing the code: ', e);
+                    return;
+                }
             }.bind(this),
             readOnly: true // false if this command should not apply in readOnly mode
         });
