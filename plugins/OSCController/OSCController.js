@@ -7,7 +7,7 @@ define(['require'], function(require) {
         audioOut: 0,
         canvas: {
             width: 520,
-            height: 520
+            height: 364
         },
     };
   
@@ -61,9 +61,30 @@ define(['require'], function(require) {
         // The canvas part
         this.ui = new K2.UI ({type: 'CANVAS2D', target: args.canvas});
 		
+        /* deck */
+		var deckImage = resources [3];
+       	var bgArgs = new K2.Background({
+        	ID: 'background',
+            image: deckImage,
+            top: 0,
+            left: 0
+        });
+    
+        this.ui.addElement(bgArgs, {zIndex: 0});
+		
+		var nKNobs = 6;
+		var nButtons = 12;
+		var buttonsPerRow = 6;
+		
 		var knobImage = resources[0];
-		var knobLeft = 10;
+		var buttonImages = [resources[4], resources[5]];
+		var knobLeft = 18;
 		var knobSpacing = 84;
+		var buttonLeft = 18;
+		var buttonSpacing = 84;
+		var buttonTop = 140;
+		var buttonYSpacing = 120;
+		
         var knobArgs = {
              imagesArray : [knobImage],
              tileWidth: 64,
@@ -72,17 +93,36 @@ define(['require'], function(require) {
              bottomAngularOffset: 33,
              ID: "",
              left: 0,
-             top: 0,
+             top: 14,
              onValueSet: function(slot, value) {
                  this.ui.refresh();
              }.bind(this),
              isListening : true
          };
-		 for (var i = 0; i < 4; i +=1) {
+		 for (var i = 0; i < nKNobs; i +=1) {
              knobArgs.ID = 'knob' + i;
              knobArgs.left = (knobLeft + i * knobSpacing);
              this.ui.addElement(new K2.Knob(knobArgs));
 		 }
+		 
+		 var buttonArgs = {
+             ID: "",
+             left: 0,
+             top: 0,
+             /*mode: 'immediate',*/
+             imagesArray : buttonImages,
+             onValueSet: function (slot, value) {
+                 this.ui.refresh();
+             }.bind(this),
+             isListening: true
+		 }
+		 for (var i = 0; i < nButtons; i +=1) {
+             buttonArgs.ID = 'button' + i;
+             buttonArgs.left = (buttonLeft + (i % buttonsPerRow) * buttonSpacing);
+			 buttonArgs.top = buttonTop + Math.floor(i / buttonsPerRow) * buttonYSpacing;
+             this.ui.addElement(new K2.Button(buttonArgs));
+		 }
+		 
 		 this.ui.refresh();
 	 }
   
@@ -90,12 +130,13 @@ define(['require'], function(require) {
        the plugin is requested [e.g: displayed on screen] */        
     var initPlugin = function(initArgs) {
         var args = initArgs;
-        require ([  'image!'+ require.toUrl('./LittlePhatty.png'),
-                    /*'image!'+ require.toUrl('./'),
-                    'image!'+ require.toUrl('./'),
-                    'image!'+ require.toUrl('./'),
-                    'image!'+ require.toUrl('./')
-					*/],
+        require ([  'image!'+ require.toUrl('./assets/images/LittlePhatty.png'),
+                    'image!'+ require.toUrl('./assets/images/button_off.png'),
+                    'image!'+ require.toUrl('./assets/images/button_on.png'),
+                    'image!'+ require.toUrl('./assets/images/OSCDeck.png'),
+                    'image!'+ require.toUrl('./assets/images/white_button.png'),
+					'image!'+ require.toUrl('./assets/images/red_button.png'),
+					],
                     function () {
                         var resources = arguments;
                         pluginFunction.call (this, args, resources);
