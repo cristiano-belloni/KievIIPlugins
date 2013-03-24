@@ -3,7 +3,7 @@ define(['require'], function(require) {
     /* This gets returned to the host as soon as the plugin is loaded */ 
     var pluginConf = {
         osc: true,
-        audioIn: 1,
+        audioIn: 0,
         audioOut: 0,
         canvas: {
             width: 520,
